@@ -3,7 +3,7 @@
 namespace backend\models;
 
 use Yii;
-
+use xj\uploadify\UploadAction;
 /**
  * This is the model class for table "brand".
  *
@@ -17,7 +17,7 @@ use Yii;
 class Brand extends \yii\db\ActiveRecord
 {
     static public $sexOptions=[-1=>'删除',1=>'显示',0=>'隐藏'];
-    public $imgFile;
+   // public $imgFile;
     /**
      * @inheritdoc
      */
@@ -37,7 +37,7 @@ class Brand extends \yii\db\ActiveRecord
             [['sort', 'status'], 'integer'],
             [['name'], 'string', 'max' => 50],
             [['logo'], 'string', 'max' => 255],
-            ['imgFile','file','extensions'=>['jpg','png','gif']],
+           // ['imgFile','file','extensions'=>['jpg','png','gif']],
         ];
     }
 
@@ -55,4 +55,6 @@ class Brand extends \yii\db\ActiveRecord
             'status' => '状态',
         ];
     }
+
+
 }

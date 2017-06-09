@@ -3,28 +3,33 @@
 namespace backend\models;
 
 use Yii;
-
+use yii\db\ActiveRecord;
 /**
- * This is the model class for table "article_category".
+ * This is the model class for table "article".
  *
  * @property integer $id
  * @property string $name
  * @property string $intro
+ * @property integer $article_category_id
  * @property integer $sort
  * @property integer $status
- * @property integer $is_help
+ * @property integer $create_time
  */
-class ArticleCategory extends \yii\db\ActiveRecord
-
+class Article extends ActiveRecord
 {
+    public function getArticleCategory()
+    {
+        //hasOne的第二个参数【k=>v】 k代表分类的主键（id） v代表商品分类在当前对象的关联id
+        return $this->hasOne(ArticleCategory::className(),['id'=>'article_category_id']);
+    }
+
     static public $sexOptions=[-1=>'删除',1=>'正常',0=>'隐藏'];
-    static public $helpOptions=[1=>'帮助',0=>'其他'];
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'article_category';
+        return 'article';
     }
 
     /**
@@ -33,9 +38,9 @@ class ArticleCategory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name','intro','sort','status','is_help'], 'required'],
+            [['name','intro','sort','status'], 'required'],
             [['intro'], 'string'],
-            [['sort', 'status', 'is_help'], 'integer'],
+            [['article_category_id', 'sort', 'status', 'create_time'], 'integer'],
             [['name'], 'string', 'max' => 50],
         ];
     }
@@ -49,9 +54,10 @@ class ArticleCategory extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => '名称',
             'intro' => '简介',
+            'article_category_id' => '文章分类',
             'sort' => '排序',
             'status' => '状态',
-            'is_help' => '类型',
+            'create_time' => '创建时间',
         ];
     }
 }

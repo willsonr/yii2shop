@@ -18,12 +18,12 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'sort')->textInput() ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
+    <?= $form->field($model, 'status')->radioList(\backend\models\ArticleCategory::$sexOptions) ?>
 
-    <?= $form->field($model, 'is_help')->textInput() ?>
+    <?= $form->field($model, 'is_help')->radioList(\backend\models\ArticleCategory::$helpOptions) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? '添加' : '修改', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

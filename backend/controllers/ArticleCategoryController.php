@@ -8,6 +8,7 @@ use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Request;
 
 /**
  * ArticleCategoryController implements the CRUD actions for ArticleCategory model.
@@ -36,6 +37,9 @@ class ArticleCategoryController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
+            'pagination' => [
+                'pageSize' => 2,
+            ],
             'query' => ArticleCategory::find(),
         ]);
 
@@ -65,13 +69,18 @@ class ArticleCategoryController extends Controller
     {
         $model = new ArticleCategory();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+        $request=new Request();
+        if($request->isPost){
+            $model->load($request->post());
+            if($model->validate()){
+                $model->save();
+                return $this->redirect(['article-category/index']);
+            }else{
+                //打印错误信息
+                var_dump($model->getErrors());exit;
+            }
         }
+        return $this->render('_form',['model'=>$model]);
     }
 
     /**
@@ -84,13 +93,19 @@ class ArticleCategoryController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+        $request = new Request();
+        if ($request->isPost) {
+            $model->load($request->post());
+            if ($model->validate()) {
+                $model->save();
+                return $this->redirect(['article-category/index']);
+            } else {
+                //打印错误信息
+                var_dump($model->getErrors());
+                exit;
+            }
         }
+        return $this->render('_form',['model'=>$model]);
     }
 
     /**
@@ -101,7 +116,7 @@ class ArticleCategoryController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $this->findModel($id)->save();
 
         return $this->redirect(['index']);
     }
@@ -116,6 +131,7 @@ class ArticleCategoryController extends Controller
     protected function findModel($id)
     {
         if (($model = ArticleCategory::findOne($id)) !== null) {
+            $model->status=-1;
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

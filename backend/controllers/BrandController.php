@@ -39,7 +39,7 @@ class BrandController extends Controller
     {
         $dataProvider = new ActiveDataProvider([
             'pagination' => [
-                    'pageSize' => 2,
+                    'pageSize' => 5,
           ],
             'query' => Brand::find(),
 

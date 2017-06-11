@@ -14,7 +14,7 @@
     <?php foreach($models as $model):?>
         <tr>
             <td><?=$model->id?></td>
-            <td><?=$model->name?></td>
+            <td><?=\yii\bootstrap\Html::a($model->name,['article/content','id'=>$model->id],['class'=>'btn  btn-xs'])?></td>
             <td><?=mb_substr($model->intro,0,10,'utf-8')?></td>
             <td><?=$model->articleCategory->name?></td>
             <td><?=$model->sort?></td>

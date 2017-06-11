@@ -86,5 +86,19 @@ class ArticleController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+    public function actionContent($id){
+        $models=Article::findOne(['id' => $id]);
+        $content=ArticleDetail::findOne(['article_id' => $id]);
+//        var_dump($content);exit;
+        return $this->render('content',['models'=>$models,'content'=>$content]);
+    }
 
+    public function actions()
+    {
+        return [
+            'upload' => [
+                'class' => 'kucha\ueditor\UEditorAction',
+            ]
+        ];
+    }
 }

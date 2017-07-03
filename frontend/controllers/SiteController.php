@@ -70,8 +70,10 @@ class SiteController extends Controller
      *
      * @return mixed
      */
+   // public $layout;
     public function actionIndex()
     {
+       // $this->layout = 'site';
         return $this->render('index');
     }
 

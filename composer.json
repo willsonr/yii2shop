@@ -22,7 +22,9 @@
         "crazyfd/yii2-qiniu": "dev-master",
         "kucha/ueditor": "*",
         "creocoder/yii2-nested-sets": "0.9.*",
-        "kartik-v/yii2-widget-fileinput": "@dev"
+        "kartik-v/yii2-widget-fileinput": "@dev",
+        "flc/alidayu": "^2.0",
+        "overtrue/wechat": "^3.3"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

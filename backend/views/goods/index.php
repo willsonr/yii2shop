@@ -2,7 +2,9 @@
 
 
 
-<?=\yii\bootstrap\Html::a('添加',['goods/add'],['class'=>'btn btn-info btn-xs'])?>
+<?php
+if(Yii::$app->user->can('goods/add')) {
+echo \yii\bootstrap\Html::a('添加',['goods/add'],['class'=>'btn btn-info btn-xs']);}?>
 
 <?php
 $form = \yii\bootstrap\ActiveForm::begin([
@@ -11,7 +13,7 @@ $form = \yii\bootstrap\ActiveForm::begin([
     'action'=>\yii\helpers\Url::to(['goods/index']),
     'options'=>['class'=>'form-inline']
 ]);
-echo $form->field($model,'name')->textInput(['placeholder'=>'商品名'])->label(false);
+echo $form->field($model,'name')->textInput(['placeholder'=>'商品名','name'=>'keyword'])->label(false);
 echo $form->field($model,'sn')->textInput(['placeholder'=>'货号'])->label(false);
 echo $form->field($model,'minPrice')->textInput(['placeholder'=>'￥'])->label(false);
 echo $form->field($model,'maxPrice')->textInput(['placeholder'=>'￥'])->label('-');
@@ -59,9 +61,15 @@ echo \yii\bootstrap\Html::submitButton('搜索',['class'=>'btn btn-info btn-xs']
         <td><?=$model->sort?></td>
         <td><?=date('Y-m-d H:i:s',$model->create_time)?></td>
         <td>
-            <?=\yii\bootstrap\Html::a('相册',['goods/gallery','id'=>$model->id],['class'=>'btn btn-danger btn-xs'])?>
-            <?=\yii\bootstrap\Html::a('修改',['goods/edit','id'=>$model->id],['class'=>'btn btn-info btn-xs'])?>
-            <?=\yii\bootstrap\Html::a('删除',['goods/del','id'=>$model->id],['class'=>'btn btn-danger btn-xs'])?>
+            <?php
+            if(Yii::$app->user->can('goods/gallery')) {
+            echo \yii\bootstrap\Html::a('相册',['goods/gallery','id'=>$model->id],['class'=>'btn btn-danger btn-xs']);}?>
+            <?php
+            if(Yii::$app->user->can('goods/edit')) {
+            echo \yii\bootstrap\Html::a('修改',['goods/edit','id'=>$model->id],['class'=>'btn btn-info btn-xs']);}?>
+            <?php
+            if(Yii::$app->user->can('goods/del')) {
+            echo \yii\bootstrap\Html::a('删除',['goods/del','id'=>$model->id],['class'=>'btn btn-danger btn-xs']);}?>
 
         </td>
         </tr>

@@ -4,7 +4,7 @@ namespace backend\models;
 
 use Yii;
 use yii\web\IdentityInterface;
-
+use yii\helpers\ArrayHelper;
 /**
  * This is the model class for table "user".
  *
@@ -26,11 +26,15 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
      */
 
     static public $staOptions=[-1=>'删除',0=>'崩坏',1=>'正常'];
+    public $roles;
     public static function tableName()
     {
         return 'user';
     }
-
+    public static function getRolesOption(){
+        $authManager=\Yii::$app->authManager;
+        return ArrayHelper::map($authManager->getRoles(),'name','description');
+    }
     /**
      * @inheritdoc
      */
@@ -45,6 +49,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             [['email'], 'unique'],
             [['email'], 'email'],
             ['update_ip','string'],
+            [['roles','email'],'safe']
 
            // [['password_reset_token'], 'unique'],
         ];
@@ -68,6 +73,33 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             'update_ip' => '最后登录IP',
         ];
     }
+//添加用户角色
+    public function addRole(){
+        $authManager=Yii::$app->authManager;
+        $model=new User();
+        $id=$model->id;
+//        if($authManager->getRole($this->roles)){
+//            $this->addError('name','角色已存在');
+//        }else{
+            $role= $authManager->getRole($this->roles);
+            if($authManager->assign($role,$id)){
+                foreach ($this->roles as $role){
+                    $rol=$authManager->getRole($role);
+                    if($rol) $authManager->addChild($role,$rol);
+                }
+                return true;
+            };
+
+
+         return false;
+    }
+
+
+
+
+
+
+
     public function beforeSave($insert)
     {
         if($insert){

@@ -1,4 +1,6 @@
-<?=\yii\bootstrap\Html::a('添加',['goods-category/add'],['class'=>'btn btn-info btn-xs'])?>
+<?php
+if(Yii::$app->user->can('goods-category/add')) {
+echo \yii\bootstrap\Html::a('添加',['goods-category/add'],['class'=>'btn btn-info btn-xs']);}?>
 <table class="list table table-hover table-bordered">
     <tr class="danger">
         <th>ID</th>
@@ -14,8 +16,12 @@
             </td>
             <td><?=$model->parent_id?$model->parent->name:''?></td>
             <td>
-                <?=\yii\bootstrap\Html::a('修改',['goods-category/edit','id'=>$model->id],['class'=>'btn btn-info btn-xs'])?>
-                <?=\yii\bootstrap\Html::a('删除',['goods-category/del','id'=>$model->id],['class'=>'btn btn-danger btn-xs'])?>
+                <?php
+                if(Yii::$app->user->can('goods-category/edit')) {
+                echo \yii\bootstrap\Html::a('修改',['goods-category/edit','id'=>$model->id],['class'=>'btn btn-info btn-xs']);}?>
+                <?php
+                if(Yii::$app->user->can('goods-category/del')) {
+                echo \yii\bootstrap\Html::a('删除',['goods-category/del','id'=>$model->id],['class'=>'btn btn-danger btn-xs']);}?>
             </td>
         </tr>
 

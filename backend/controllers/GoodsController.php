@@ -1,9 +1,10 @@
 <?php
 
 namespace backend\controllers;
-
+use backend\components\SphinxClient;
 use backend\models\GoodsDayCount;
 use backend\models\GoodsGallery;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use backend\models\Goods;
 use backend\models\GoodsCategory;
@@ -19,16 +20,37 @@ class GoodsController extends \yii\web\Controller
     {
         $model = new GoodsSearchForm();
         $query=Goods::find();
+        if($keyword = \Yii::$app->request->get('keyword')){
+            $cl = new SphinxClient();
+            $cl->SetServer ( '127.0.0.1', 9312);
+            $cl->SetConnectTimeout ( 10 );
+            $cl->SetArrayResult ( true );
+            $cl->SetMatchMode ( SPH_MATCH_ALL);
+            $cl->SetLimits(0, 1000);
+            $res = $cl->Query($keyword, 'goods');//shopstore_search
+            //var_dump($res);exit;
 
+            if(!isset($res['matches'])){
+//                throw new NotFoundHttpException('没有找到xxx商品');
+                $query->where(['id'=>0]);
+            }else{
+
+                //获取商品id
+                //var_dump($res);exit;
+                $ids = ArrayHelper::map($res['matches'],'id','id');
+                $query->where(['in','id',$ids]);
+            }
+        }
 //搜索功能
 
-        $model->search($query);
+       // $model->search($query);
 
         $page = new Pagination([
             'totalCount'=>$query->count(),
             'defaultPageSize'=>'5',
         ]);
         $models = $query->offset($page->offset)->limit($page->limit)->all();
+
         return $this->render('index',['models'=>$models,'page'=>$page,'model'=>$model]);
     }
 //添加商品

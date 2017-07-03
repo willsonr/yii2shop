@@ -1,5 +1,9 @@
 
-<?=\yii\bootstrap\Html::a('添加',['article/add'],['class'=>'btn btn-info btn-xs'])?>
+<?php
+if(Yii::$app->user->can('article/add')) {
+    echo \yii\bootstrap\Html::a('添加', ['article/add'], ['class' => 'btn btn-info btn-xs']);
+}
+?>
 <table class="table table-hover">
     <tr>
         <th>ID</th>
@@ -21,8 +25,17 @@
             <td><?=\backend\models\Article::$sexOptions[$model->status]?></td>
             <td><?=date('Y-m-d H:i:s',$model->create_time)?></td>
             <td>
-                <?=\yii\bootstrap\Html::a('修改',['article/edit','id'=>$model->id],['class'=>'btn btn-info btn-xs'])?>
-                <?=\yii\bootstrap\Html::a('删除',['article/del','id'=>$model->id],['class'=>'btn btn-info btn-xs'])?>
+                <?php
+                if(Yii::$app->user->can('article/edit')){
+                   echo \yii\bootstrap\Html::a('修改',['article/edit','id'=>$model->id],['class'=>'btn btn-info btn-xs']);
+                }
+
+                ?>
+               <?php
+                if(Yii::$app->user->can('article/del')) {
+                    echo \yii\bootstrap\Html::a('删除', ['article/del', 'id' => $model->id], ['class' => 'btn btn-info btn-xs']);
+                }
+                ?>
             </td>
         </tr>
     <?php endforeach;?>

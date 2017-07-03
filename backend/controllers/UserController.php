@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\RoleForm;
 use backend\models\UpdateForm;
 use backend\models\User;
 use backend\models\LoginForm;
@@ -11,7 +12,6 @@ class UserController extends \yii\web\Controller
 {
     public function actionIndex()
     {    $models=User::find()->all();
-
         return $this->render('index',['models'=>$models]);
     }
 //添加用户
@@ -21,13 +21,17 @@ class UserController extends \yii\web\Controller
          if($request->isPost){
              $model->load($request->post());
              $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password_hash);
+             $model->auth_key = \Yii::$app->security->generateRandomString();
              $model->created_at=time();
              $model->updated_at=time();
              $model->update_ip=\Yii::$app->request->userIP;
              if($model->validate()){
                  $model->save();
-                 \Yii::$app->session->setFlash('success','添加成功');
-                 return $this->redirect(['user/index']);
+                 $authManager=\Yii::$app->authManager;
+                 $role= $authManager->getRole($model->roles);
+                 $authManager->assign($role,$model->id);
+                     \Yii::$app->session->setFlash('success','添加成功');
+                     return $this->redirect(['user/index']);
              }else{
                  var_dump($model->getErrors());exit;
              }
@@ -48,7 +52,11 @@ class UserController extends \yii\web\Controller
             $model->update_ip=\Yii::$app->request->userIP;
             if($model->validate()){
                 $model->save();
-                \Yii::$app->session->setFlash('success','添加成功');
+                $authManager=\Yii::$app->authManager;
+                    $authManager->revokeAll($model->id);
+                    $role= $authManager->getRole($model->roles);
+                    $authManager->assign($role,$model->id);
+                \Yii::$app->session->setFlash('success','修改成功');
                 return $this->redirect(['user/index']);
             }else{
                 var_dump($model->getErrors());exit;
@@ -97,7 +105,7 @@ class UserController extends \yii\web\Controller
         if( $model->load($request->post())&&$model->validate()){
             $id= \Yii::$app->user->id;
             $user= User::findOne(['id'=>$id]);
-            $user->auth_key = \Yii::$app->security->generateRandomString();
+            //$user->auth_key = \Yii::$app->security->generateRandomString();
             $user->updated_at=time();
             $user->update_ip=\Yii::$app->request->userIP;
           // var_dump($user->auth_key);exit;
@@ -130,4 +138,19 @@ class UserController extends \yii\web\Controller
             ],
         ];
     }
+    //添加授权
+
+    public function actionRole($id){
+        $model=new UserForm();
+        if($model->load(\Yii::$app->request->post())&&$model->validate()){
+                $authManager=\Yii::$app->authManager;
+                $role= $authManager->getRole($model->role);
+                $authManager->assign($role,$id);
+                \Yii::$app->session->setFlash('success','添加成功');
+                return $this->redirect(['user/index']);
+            }
+
+        return $this->render('role',['model'=>$model]);
+    }
+
 }

@@ -82,4 +82,9 @@ class GoodsCategory extends \yii\db\ActiveRecord
     {
         return new GoodsCategoryQuery(get_called_class());
     }
+
+    public function getChildren()
+    {
+        return $this->hasMany(self::className(),['parent_id'=>'id']);
+    }
 }
